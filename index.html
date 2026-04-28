@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Azmain Hossain | Data Analytics & Strategy</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                        display: ['Sora', 'sans-serif']
+                    },
+                    colors: {
+                        bgBase: '#04070f',
+                        surface: '#080f1e',
+                        primary: '#00d4aa',
+                        accent: '#7c5cfc',
+                        warm: '#ff6b6b'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        * { box-sizing: border-box; }
+        body { background-color: #04070f; color: #dde8f0; font-family: 'Outfit', sans-serif; overflow-x: hidden; }
+
+        /* Grid BG */
+        .bg-grid {
+            position: fixed; inset: 0; z-index: -2;
+            background-size: 48px 48px;
+            background-image:
+                linear-gradient(to right, rgba(0,212,170,0.04) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(0,212,170,0.04) 1px, transparent 1px);
+        }
+
+        /* Scanlines */
+        .bg-scanlines {
+            position: fixed; inset: 0; z-index: -1;
+            background: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,0,0,0.05) 3px, rgba(0,0,0,0.05) 4px);
+            pointer-events: none;
+        }
+
+        /* Glow orbs */
+        .orb { position: fixed; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: -1; }
+
+        /* Magic rotating border */
+        .magic-card {
+            position: relative;
+            background: #060c19;
+            border-radius: 1rem;
+            z-index: 1;
+            overflow: hidden;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .magic-card:hover {
+            transform: scale(1.03);
+        }
+        .magic-card::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(from 0deg, transparent 65%, #00d4aa 78%, #7c5cfc 90%, transparent 100%);
+            animation: spin 4s linear infinite;
+            z-index: -1; opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .magic-card:hover::before { opacity: 1; }
+        .magic-card::after {
+            content: ''; position: absolute; inset: 1.5px; background: #070d1c; border-radius: 0.875rem; z-index: -1;
+        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+
+        /* Block hover */
+        .block-glow {
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            border: 1px solid rgba(255,255,255,0.06);
+            background: rgba(255,255,255,0.025);
+        }
+        .block-glow:hover {
+            border-color: rgba(0,212,170,0.4);
+            box-shadow: 0 0 28px rgba(0,212,170,0.14);
+            transform: scale(1.04);
+        }
+
+        /* Text gradient */
+        .text-gradient {
+            background: linear-gradient(135deg, #00d4aa, #7c5cfc, #00d4aa);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shine 4s linear infinite;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+
+        /* Cursor blink */
+        .typing-cursor::after { content: '|'; animation: blink 1s step-start infinite; color: #00d4aa; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Timeline dot pulse */
+        .pulse-dot {
+            position: relative;
+        }
+        .pulse-dot::after {
+            content: ''; position: absolute; inset: -4px;
+            border-radius: 50%;
+            border: 1px solid #00d4aa;
+            animation: ping 2s ease-out infinite;
+            opacity: 0;
+        }
+        @keyframes ping { 0% { transform: scale(1); opacity: 0.6; } 100% { transform: scale(2.2); opacity: 0; } }
+
+        /* Tag pill */
+        .tag {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: rgba(255,255,255,0.04);
+            color: #8eaec8;
+            letter-spacing: 0.03em;
+        }
+
+        /* Nav link */
+        .nav-link {
+            position: relative;
+            color: #8eaec8;
+            font-size: 13px;
+            font-weight: 500;
+            letter-spacing: 0.04em;
+            transition: color 0.2s;
+            text-decoration: none;
+        }
+        .nav-link::after {
+            content: ''; position: absolute; bottom: -4px; left: 0;
+            width: 0; height: 1.5px;
+            background: #00d4aa;
+            transition: width 0.25s ease;
+        }
+        .nav-link:hover { color: #fff; }
+        .nav-link:hover::after { width: 100%; }
+
+        /* Section label */
+        .section-label {
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: #00d4aa;
+        }
+
+        /* Stat card */
+        .stat-card {
+            background: rgba(0,212,170,0.05);
+            border: 1px solid rgba(0,212,170,0.15);
+            border-radius: 12px;
+            padding: 20px 24px;
+            text-align: center;
+        }
+
+        /* Form */
+        .form-input {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #dde8f0;
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-input::placeholder { color: #4a6070; }
+        .form-input:focus {
+            border-color: #00d4aa;
+            box-shadow: 0 0 0 3px rgba(0,212,170,0.1);
+        }
+
+        /* Social icon */
+        .social-btn {
+            width: 42px; height: 42px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #8eaec8;
+            font-size: 16px;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+        .social-btn:hover {
+            background: rgba(0,212,170,0.1);
+            border-color: rgba(0,212,170,0.4);
+            color: #00d4aa;
+            transform: translateY(-2px);
+        }
+
+        /* Skill badge */
+        .skill-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.08);
+            font-size: 13px;
+            color: #c5d8e8;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .skill-badge:hover {
+            background: rgba(0,212,170,0.08);
+            border-color: rgba(0,212,170,0.3);
+            color: #00d4aa;
+        }
+
+        /* CTA button */
+        .btn-cta {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 14px 28px;
+            background: #00d4aa;
+            color: #04070f;
+            font-weight: 700;
+            font-size: 14px;
+            letter-spacing: 0.03em;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none; cursor: pointer;
+        }
+        .btn-cta:hover { background: #00ead0; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,212,170,0.25); }
+
+        .btn-outline {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 14px 24px;
+            background: transparent;
+            color: #c5d8e8;
+            font-weight: 600;
+            font-size: 14px;
+            letter-spacing: 0.02em;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+        .btn-outline:hover { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.2); }
+
+        /* Conic border button */
+        .btn-conic-wrap {
+            position: relative;
+            display: inline-flex;
+            height: 48px;
+            border-radius: 10px;
+            padding: 1.5px;
+            overflow: hidden;
+        }
+        .btn-conic-wrap::before {
+            content: '';
+            position: absolute; inset: -100%;
+            background: conic-gradient(from 90deg at 50% 50%, #00d4aa 0%, transparent 50%, #7c5cfc 100%);
+            animation: spin 3s linear infinite;
+        }
+        .btn-conic-inner {
+            position: relative;
+            display: flex; align-items: center; justify-content: center;
+            width: 100%;
+            background: #04070f;
+            border-radius: 9px;
+            padding: 0 24px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #fff;
+            text-decoration: none;
+            z-index: 1;
+            white-space: nowrap;
+        }
+
+        /* Experience timeline */
+        .tl-dot {
+            position: absolute;
+            left: -37px; top: 4px;
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            background: #04070f;
+            border: 2px solid #2a3d5a;
+            transition: all 0.3s;
+        }
+        .tl-item:hover .tl-dot {
+            border-color: #00d4aa;
+            background: #00d4aa;
+            box-shadow: 0 0 16px rgba(0,212,170,0.5);
+        }
+
+        /* Separator line */
+        .sep { height: 1px; background: linear-gradient(90deg, transparent, rgba(0,212,170,0.2), transparent); }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: #04070f; }
+        ::-webkit-scrollbar-thumb { background: #1a2d40; border-radius: 99px; }
+        ::-webkit-scrollbar-thumb:hover { background: #00d4aa; }
+    </style>
+</head>
+<body class="antialiased selection:bg-primary selection:text-bgBase">
+
+    <!-- Backgrounds -->
+    <div class="bg-grid"></div>
+    <div class="bg-scanlines"></div>
+    <div class="orb w-[600px] h-[600px] bg-primary/10 top-[-10%] left-[-15%]"></div>
+    <div class="orb w-[500px] h-[500px] bg-accent/10 bottom-[-10%] right-[-10%]"></div>
+
+    <!-- NAV -->
+    <nav class="fixed w-full z-50 border-b border-white/[0.06]" style="background: rgba(4,7,15,0.75); backdrop-filter: blur(16px);">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="font-display text-xl font-bold text-white tracking-tight">
+                azmain<span style="color:#00d4aa">.</span>
+            </a>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#about" class="nav-link">About</a>
+                <a href="#skills" class="nav-link">Stack</a>
+                <a href="#experience" class="nav-link">Experience</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#cv" class="nav-link">CV</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+            <div class="btn-conic-wrap">
+                <a href="#contact" class="btn-conic-inner">Hire Me</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <section id="about" class="min-h-screen flex flex-col justify-center pt-24 pb-16 relative">
+        <div class="max-w-6xl mx-auto px-6 w-full">
+            <div class="grid lg:grid-cols-2 gap-16 items-center">
+                <!-- Left -->
+                <div data-aos="fade-right" data-aos-duration="700">
+                    <!-- Status badge -->
+                    <div class="inline-flex items-center gap-2 mb-8 px-4 py-2 rounded-full border border-white/10" style="background: rgba(0,212,170,0.05);">
+                        <span class="relative flex h-2.5 w-2.5">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+                        </span>
+                        <span class="text-xs font-semibold text-primary tracking-widest uppercase">Open to Opportunities</span>
+                    </div>
+
+                    <h1 class="font-display text-5xl md:text-6xl font-bold text-white leading-tight tracking-tight mb-4">
+                        Hi, I'm <span class="text-gradient">Azmain</span><br>Hossain.
+                    </h1>
+
+                    <div class="text-xl md:text-2xl font-display text-slate-400 mb-6 h-9 flex items-center gap-1">
+                        <span class="text-primary font-semibold mr-1">&gt;</span>
+                        <span id="typewriter" class="typing-cursor text-white font-semibold"></span>
+                    </div>
+
+                    <p class="text-slate-400 leading-relaxed mb-8 text-base max-w-lg">
+                        Computer Science graduate and Senior Executive at Pathao. I build end-to-end SQL analytics infrastructure — from raw data validation to management-ready performance frameworks that protect revenue and power decisions.
+                    </p>
+
+                    <!-- Stats row -->
+                    <div class="grid grid-cols-3 gap-3 mb-10">
+                        <div class="stat-card">
+                            <div class="font-display text-2xl font-bold text-primary">1+</div>
+                            <div class="text-xs text-slate-500 mt-1 font-medium">Years XP</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="font-display text-2xl font-bold text-primary">~12%</div>
+                            <div class="text-xs text-slate-500 mt-1 font-medium">Leakage Cut</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="font-display text-2xl font-bold text-primary">5%</div>
+                            <div class="text-xs text-slate-500 mt-1 font-medium">Churn Reduced</div>
+                        </div>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="flex flex-wrap gap-3 mb-8">
+                        <a href="#projects" class="btn-cta">
+                            <i class="fas fa-rocket text-sm"></i> View Projects
+                        </a>
+                        <a href="#contact" class="btn-outline">
+                            <i class="fas fa-envelope text-sm"></i> Get in Touch
+                        </a>
+                    </div>
+
+
+                    <!-- Socials -->
+                    <div class="flex items-center gap-3">
+                        <span class="text-xs text-slate-600 font-medium uppercase tracking-widest">Find me on</span>
+                        <div class="flex gap-2">
+                            <a href="https://linkedin.com/in/azmain-hossain-606366225/" target="_blank" class="social-btn" title="LinkedIn">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="https://github.com/azmainhossain99" target="_blank" class="social-btn" title="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            <a href="https://www.facebook.com/share/1ERqFffBG2/?mibextid=wwXIfr" target="_blank" class="social-btn" title="Facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="mailto:azmainhossain92@gmail.com" class="social-btn" title="Email">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right — visual card -->
+                <div data-aos="fade-left" data-aos-duration="700" data-aos-delay="150">
+                    <div class="magic-card p-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-14 h-14 rounded-xl flex items-center justify-center font-display font-bold text-xl" style="background: rgba(0,212,170,0.12); color:#00d4aa;">AH</div>
+                            <div>
+                                <div class="font-display font-bold text-white text-lg">Azmain Hossain</div>
+                                <div class="text-sm text-slate-400">Senior Executive, Data Analytics & Strategy</div>
+                            </div>
+                        </div>
+                        <div class="sep mb-6"></div>
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-3 text-sm">
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(0,212,170,0.08);">
+                                    <i class="fas fa-building text-primary text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-slate-600 mb-0.5">Currently at</div>
+                                    <div class="text-white font-medium">Pathao Limited</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm">
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(124,92,252,0.08);">
+                                    <i class="fas fa-map-marker-alt text-accent text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-slate-600 mb-0.5">Location</div>
+                                    <div class="text-white font-medium">Dhaka, Bangladesh</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm">
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(255,107,107,0.08);">
+                                    <i class="fas fa-graduation-cap text-warm text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-slate-600 mb-0.5">Education</div>
+                                    <div class="text-white font-medium">BSc CSE — AUST</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 text-sm">
+                                <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background:rgba(0,212,170,0.08);">
+                                    <i class="fas fa-phone text-primary text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="text-xs text-slate-600 mb-0.5">Phone</div>
+                                    <div class="text-white font-medium">01680274661</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="sep my-6"></div>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tag">Advanced SQL</span>
+                            <span class="tag">KPI Design</span>
+                            <span class="tag">BigQuery</span>
+                            <span class="tag">Metabase</span>
+                            <span class="tag">Power BI</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SKILLS / STACK -->
+    <section id="skills" class="py-24 border-t border-white/[0.05]">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="mb-12" data-aos="fade-up">
+                <div class="section-label mb-2">02 — Tech Stack</div>
+                <h2 class="font-display text-4xl font-bold text-white">The Analytical Stack</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" data-aos="fade-up" data-aos-delay="100">
+                <!-- Large SQL block -->
+                <div class="col-span-1 md:col-span-2 block-glow rounded-2xl p-8" data-aos="zoom-in" data-aos-delay="0">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center mb-5" style="background:rgba(0,212,170,0.1);">
+                        <i class="fas fa-database text-primary text-xl"></i>
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-white mb-3">Advanced SQL & Data Warehousing</h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-5">Expert in CTEs, window functions, SLA/time logic, and cross-database joins to extract clean insights from chaotic raw ops data.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="skill-badge"><i class="fas fa-circle text-primary" style="font-size:6px;"></i>BigQuery</span>
+                        <span class="skill-badge"><i class="fas fa-circle text-primary" style="font-size:6px;"></i>PostgreSQL</span>
+                        <span class="skill-badge"><i class="fas fa-circle text-primary" style="font-size:6px;"></i>MySQL</span>
+                        <span class="skill-badge"><i class="fas fa-circle text-primary" style="font-size:6px;"></i>MS SQL Server</span>
+                    </div>
+                </div>
+
+                <!-- BI block -->
+                <div class="block-glow rounded-2xl p-6 flex flex-col" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style="background:rgba(124,92,252,0.1);">
+                        <i class="fas fa-chart-pie text-accent text-lg"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-white mb-2">BI & Visualization</h3>
+                    <p class="text-slate-500 text-xs flex-1 mb-4">Dashboards that executives actually use</p>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="skill-badge text-xs">Metabase</span>
+                        <span class="skill-badge text-xs">Power BI</span>
+                        <span class="skill-badge text-xs">Superset</span>
+                        <span class="skill-badge text-xs">Google Studio</span>
+                    </div>
+                </div>
+
+                <!-- Fraud block -->
+                <div class="block-glow rounded-2xl p-6 flex flex-col" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style="background:rgba(255,107,107,0.1);">
+                        <i class="fas fa-shield-alt text-warm text-lg"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-white mb-2">Fraud & Revenue Protection</h3>
+                    <p class="text-slate-500 text-xs flex-1 mb-4">Threshold logic, risk scoring, anomaly detection</p>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="skill-badge text-xs">SQL Rules</span>
+                        <span class="skill-badge text-xs">Risk Metrics</span>
+                        <span class="skill-badge text-xs">SLA Logic</span>
+                    </div>
+                </div>
+
+                <!-- KPI block -->
+                <div class="block-glow rounded-2xl p-6 flex flex-col" data-aos="zoom-in" data-aos-delay="300">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style="background:rgba(0,212,170,0.08);">
+                        <i class="fas fa-balance-scale text-primary text-lg"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-white mb-2">KPI & Strategy Design</h3>
+                    <p class="text-slate-500 text-xs flex-1 mb-4">Weighted incentive frameworks, SLA benchmarks</p>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="skill-badge text-xs">KPI Design</span>
+                        <span class="skill-badge text-xs">Incentive Modeling</span>
+                    </div>
+                </div>
+
+                <!-- Python -->
+                <div class="block-glow rounded-2xl p-6 flex flex-col" data-aos="zoom-in" data-aos-delay="400">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style="background:rgba(255,199,0,0.08);">
+                        <i class="fab fa-python text-yellow-400 text-lg"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-white mb-2">Programming</h3>
+                    <p class="text-slate-500 text-xs flex-1 mb-4">Analytics-focused Python & R</p>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="skill-badge text-xs">Python</span>
+                        <span class="skill-badge text-xs">R</span>
+                        <span class="skill-badge text-xs">ERD / ETL</span>
+                        <span class="skill-badge text-xs">RFM Analysis</span>
+                    </div>
+                </div>
+
+                <!-- Data Quality -->
+                <div class="block-glow rounded-2xl p-6 flex flex-col" data-aos="zoom-in" data-aos-delay="500">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-4" style="background:rgba(0,212,170,0.08);">
+                        <i class="fas fa-check-double text-primary text-lg"></i>
+                    </div>
+                    <h3 class="font-display font-bold text-white mb-2">Data Validation</h3>
+                    <p class="text-slate-500 text-xs flex-1 mb-4">Audits, root cause analysis, data quality ops</p>
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="skill-badge text-xs">Audit Frameworks</span>
+                        <span class="skill-badge text-xs">Root Cause Analysis</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience" class="py-24 border-t border-white/[0.05]">
+        <div class="max-w-4xl mx-auto px-6">
+            <div class="mb-16" data-aos="fade-up">
+                <div class="section-label mb-2">03 — Career</div>
+                <h2 class="font-display text-4xl font-bold text-white">Work Experience</h2>
+            </div>
+
+            <div class="border-l border-white/[0.08] pl-10 space-y-14 relative">
+
+                <!-- Pathao -->
+                <div class="relative tl-item group" data-aos="fade-up">
+                    <div class="tl-dot pulse-dot"></div>
+                    <span class="section-label text-xs">09/2025 – Present</span>
+                    <h3 class="font-display text-2xl font-bold text-white mt-2 mb-1">Senior Executive, Data Analytics & Strategy</h3>
+                    <p class="text-slate-400 text-sm font-medium mb-5">Pathao Limited &nbsp;·&nbsp; Gulshan, Dhaka</p>
+                    <ul class="space-y-3 text-slate-400 text-sm leading-relaxed">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-angle-right text-primary mt-1 shrink-0"></i>
+                            Owned end-to-end operations & issue-resolution analytics across courier hubs using advanced SQL (CTEs, window functions, SLA/time logic)
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-angle-right text-primary mt-1 shrink-0"></i>
+                            Reduced revenue leakage by <span class="text-white font-semibold">~10–14%</span> via weight adjustment validation — flagging discrepancies between declared, scanned, and system-calculated parcel weights
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-angle-right text-primary mt-1 shrink-0"></i>
+                            Designed weighted performance & incentive frameworks for IR and Ops teams (volume, SLA%, resolution time, reappears, D1 dispatch ratio)
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-angle-right text-primary mt-1 shrink-0"></i>
+                            Conducted data quality audits fixing inflation and mismatches caused by joins, status misclassification, and date filters
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-angle-right text-primary mt-1 shrink-0"></i>
+                            Produced management-ready dashboards and KPI summaries used for performance reviews and C-suite decision-making
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Sheba.xyz -->
+                <div class="relative tl-item group" data-aos="fade-up" data-aos-delay="100">
+                    <div class="tl-dot"></div>
+                    <span class="text-xs font-semibold text-slate-500 tracking-widest uppercase">07/2025 – 08/2025</span>
+                    <h3 class="font-display text-xl font-bold text-white mt-2 mb-1">Business Intelligence (BI) Analyst</h3>
+                    <p class="text-slate-400 text-sm font-medium mb-5">Sheba.xyz &nbsp;·&nbsp; Banani, Dhaka</p>
+                    <ul class="space-y-3 text-slate-400 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-angle-right text-slate-600 group-hover:text-accent mt-1 shrink-0 transition"></i>
+                            Promoted and transferred based on outstanding performance in lifecycle analytics and reporting
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-angle-right text-slate-600 group-hover:text-accent mt-1 shrink-0 transition"></i>
+                            Built scalable Metabase dashboards for operational and business performance monitoring
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-angle-right text-slate-600 group-hover:text-accent mt-1 shrink-0 transition"></i>
+                            Collaborated with data engineers and business teams to improve decision-making through scalable BI reporting
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Sheba Manager -->
+                <div class="relative tl-item group" data-aos="fade-up" data-aos-delay="200">
+                    <div class="tl-dot"></div>
+                    <span class="text-xs font-semibold text-slate-500 tracking-widest uppercase">03/2025 – 06/2025</span>
+                    <h3 class="font-display text-xl font-bold text-white mt-2 mb-1">Technical Business Analyst</h3>
+                    <p class="text-slate-400 text-sm font-medium mb-5">Sheba Manager &nbsp;·&nbsp; Banani, Dhaka</p>
+                    <ul class="space-y-3 text-slate-400 text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-angle-right text-slate-600 group-hover:text-accent mt-1 shrink-0 transition"></i>
+                            Created dashboards and RFM segmentations using Power BI, Superset, Metabase, and SQL — reduced customer churn by <span class="text-white font-semibold">5%</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-angle-right text-slate-600 group-hover:text-accent mt-1 shrink-0 transition"></i>
+                            Developed real-time data dictionary with ERD and ETL pipelines for internal teams
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects" class="py-24 border-t border-white/[0.05]">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="mb-12" data-aos="fade-up">
+                <div class="section-label mb-2">04 — Work</div>
+                <h2 class="font-display text-4xl font-bold text-white">Projects & Case Studies</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-6">
+
+                <div class="magic-card p-8 group block" data-aos="fade-up" data-aos-delay="50">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center transition duration-300 group-hover:scale-110" style="background:rgba(0,212,170,0.1);">
+                            <i class="fas fa-weight text-primary text-xl"></i>
+                        </div>
+                        <i class="fas fa-arrow-right text-slate-600 group-hover:text-primary transition -rotate-45 group-hover:rotate-0"></i>
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-white mb-3">Weight Adjustment Validation Framework</h3>
+                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">Analyzed discrepancies between declared, scanned, and system-calculated parcel weights. Built SQL rules to flag abnormal weight changes and high-risk orders — reducing revenue leakage and manual investigations by 10–14%.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tag">Risk Analytics</span>
+                        <span class="tag">SQL Rules</span>
+                        <span class="tag">Pathao</span>
+                    </div>
+                </div>
+
+                <div class="magic-card p-8 group block" data-aos="fade-up" data-aos-delay="150">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center transition duration-300 group-hover:scale-110" style="background:rgba(124,92,252,0.1);">
+                            <i class="fas fa-tags text-accent text-xl"></i>
+                        </div>
+                        <i class="fas fa-arrow-right text-slate-600 group-hover:text-accent transition -rotate-45 group-hover:rotate-0"></i>
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-white mb-3">Price Change Monitoring System</h3>
+                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">Designed order-, hub-, agent-, merchant-, and region-level price tracking with historical comparisons. Identified unauthorized and abnormal price changes using threshold-based logic — improving pricing transparency across multiple hubs.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tag">Threshold Logic</span>
+                        <span class="tag">BigQuery</span>
+                        <span class="tag">Pathao</span>
+                    </div>
+                </div>
+
+                <div class="magic-card p-8 group block" data-aos="fade-up" data-aos-delay="250">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center transition duration-300 group-hover:scale-110" style="background:rgba(255,107,107,0.1);">
+                            <i class="fas fa-undo-alt text-warm text-xl"></i>
+                        </div>
+                        <i class="fas fa-arrow-right text-slate-600 group-hover:text-warm transition -rotate-45 group-hover:rotate-0"></i>
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-white mb-3">Return Process Analytics Revamp</h3>
+                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">Rebuilt return lifecycle logic (request → approval → transit → closure) from raw event data. Identified stuck, delayed, and reappeared returns using SLA and status-transition logic — improving SLA visibility and reducing repeat return issues.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tag">SLA Analytics</span>
+                        <span class="tag">Lifecycle Logic</span>
+                        <span class="tag">Pathao</span>
+                    </div>
+                </div>
+
+                <div class="magic-card p-8 group block" data-aos="fade-up" data-aos-delay="350">
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="w-12 h-12 rounded-xl flex items-center justify-center transition duration-300 group-hover:scale-110" style="background:rgba(0,212,170,0.08);">
+                            <i class="fas fa-balance-scale text-primary text-xl"></i>
+                        </div>
+                        <i class="fas fa-arrow-right text-slate-600 group-hover:text-primary transition -rotate-45 group-hover:rotate-0"></i>
+                    </div>
+                    <h3 class="font-display text-xl font-bold text-white mb-3">Algorithmic Performance & Incentive Framework</h3>
+                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">Transitioned subjective employee evaluations into strict, quantifiable metrics for IR and Operations teams using weighted scoring, SLA tracking, breach analysis, and reappear-rate modeling. Used for live performance reviews at Pathao.</p>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="tag">KPI Design</span>
+                        <span class="tag">Incentive Modeling</span>
+                        <span class="tag">Ops Strategy</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- EDUCATION -->
+    <section class="py-24 border-t border-white/[0.05]">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="mb-12" data-aos="fade-up">
+                <div class="section-label mb-2">05 — Background</div>
+                <h2 class="font-display text-4xl font-bold text-white">Education</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-5" data-aos="fade-up" data-aos-delay="100">
+                <div class="block-glow rounded-2xl p-7 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full" style="background: linear-gradient(180deg, #00d4aa, transparent);"></div>
+                    <div class="pl-4">
+                        <div class="text-xs text-primary font-semibold tracking-widest uppercase mb-3">2020 – 2025</div>
+                        <h3 class="font-display text-lg font-bold text-white mb-1">BSc in Computer Science & Engineering</h3>
+                        <p class="text-slate-400 text-sm mb-3">Ahsanullah University of Science & Technology, Dhaka</p>
+                        <div class="inline-block px-3 py-1 rounded-full text-xs font-bold" style="background:rgba(0,212,170,0.1); color:#00d4aa;">CGPA: 3.038 / 4.00</div>
+                    </div>
+                </div>
+                <div class="block-glow rounded-2xl p-7 relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-1 h-full" style="background: linear-gradient(180deg, #7c5cfc, transparent);"></div>
+                    <div class="pl-4">
+                        <div class="text-xs text-accent font-semibold tracking-widest uppercase mb-3">2017 – 2019</div>
+                        <h3 class="font-display text-lg font-bold text-white mb-1">Higher Secondary Certificate</h3>
+                        <p class="text-slate-400 text-sm mb-3">Dhaka Residential Model College, Dhaka</p>
+                        <div class="inline-block px-3 py-1 rounded-full text-xs font-bold" style="background:rgba(124,92,252,0.1); color:#7c5cfc;">GPA: 5.00 / 5.00 &nbsp;⭑</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CV SECTION -->
+    <section id="cv" class="py-20 border-t border-white/[0.05]">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-8" data-aos="fade-up">
+                <div>
+                    <div class="section-label mb-2">06 — Resume</div>
+                    <h2 class="font-display text-4xl font-bold text-white">Curriculum Vitae</h2>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <a href="https://drive.google.com/file/d/1imyNiPCFLQ08KnSiloStOxq9cW1D_IsE/view?usp=sharing"
+                        target="_blank" class="btn-cta">
+                        <i class="fas fa-eye text-sm"></i> View CV
+                    </a>
+                    <a href="https://drive.google.com/uc?export=download&id=1imyNiPCFLQ08KnSiloStOxq9cW1D_IsE"
+                        class="btn-outline" style="border-color:rgba(124,92,252,0.4); color:#7c5cfc;">
+                        <i class="fas fa-download text-sm"></i> Download PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="py-24 border-t border-white/[0.05]">
+        <div class="max-w-3xl mx-auto px-6">
+            <div class="text-center mb-12" data-aos="fade-up">
+                <div class="section-label mb-2 justify-center flex">07 — Let's Talk</div>
+                <h2 class="font-display text-4xl font-bold text-white mb-4">Start a Conversation</h2>
+                <p class="text-slate-400 text-base">Looking to build data pipelines, identify revenue leakage, or design performance frameworks? Let's connect.</p>
+            </div>
+
+            <form action="https://formsubmit.co/azmainhossain92@gmail.com" method="POST"
+                class="block-glow rounded-2xl p-8 md:p-10" data-aos="fade-up" data-aos-delay="100">
+                <input type="hidden" name="_captcha" value="false">
+                <input type="hidden" name="_subject" value="Portfolio Inquiry — Azmain Hossain">
+
+                <div class="grid md:grid-cols-2 gap-5 mb-5">
+                    <div>
+                        <label class="block text-xs text-slate-500 font-medium mb-2 uppercase tracking-wider">Your Name</label>
+                        <input type="text" name="name" required placeholder="John Doe" class="form-input">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-slate-500 font-medium mb-2 uppercase tracking-wider">Email Address</label>
+                        <input type="email" name="email" required placeholder="you@company.com" class="form-input">
+                    </div>
+                </div>
+                <div class="mb-5">
+                    <label class="block text-xs text-slate-500 font-medium mb-2 uppercase tracking-wider">Subject</label>
+                    <input type="text" name="subject" placeholder="Job Opportunity / Collaboration" class="form-input">
+                </div>
+                <div class="mb-8">
+                    <label class="block text-xs text-slate-500 font-medium mb-2 uppercase tracking-wider">Message</label>
+                    <textarea name="message" rows="5" required placeholder="Tell me about the role or project..." class="form-input" style="resize:vertical;"></textarea>
+                </div>
+
+                <div class="btn-conic-wrap w-full" style="height:52px;">
+                    <button type="submit" class="btn-conic-inner w-full text-base font-bold">
+                        Send Message &nbsp;<i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-white/[0.05] py-10">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div>
+                <div class="font-display text-lg font-bold text-white mb-1">azmain<span style="color:#00d4aa">.</span></div>
+                <div class="text-xs text-slate-600">Senior Executive, Data Analytics & Strategy</div>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="https://linkedin.com/in/azmain-hossain-606366225/" target="_blank" class="social-btn" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://github.com/azmainhossain99" target="_blank" class="social-btn" title="GitHub"><i class="fab fa-github"></i></a>
+                <a href="https://www.facebook.com/share/1ERqFffBG2/?mibextid=wwXIfr" target="_blank" class="social-btn" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="mailto:azmainhossain92@gmail.com" class="social-btn" title="Email"><i class="fas fa-envelope"></i></a>
+            </div>
+            <div class="text-xs text-slate-600">&copy; 2026 Azmain Hossain. All rights reserved.</div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 750, once: true, offset: 60 });
+
+        // Typewriter
+        const words = ["Data Analytics & Strategy.", "SQL & BI Specialist.", "Operations Analyst.", "Revenue Protection Expert."];
+        let i = 0, j = 0, isDeleting = false, isWaiting = false;
+        function type() {
+            const el = document.getElementById("typewriter");
+            const word = words[i];
+            if (isWaiting) return setTimeout(() => { isWaiting = false; isDeleting = true; type(); }, 2200);
+            if (!isDeleting) {
+                el.innerText = word.substring(0, j + 1); j++;
+                if (j === word.length) isWaiting = true;
+            } else {
+                el.innerText = word.substring(0, j - 1); j--;
+                if (j === 0) { isDeleting = false; i = (i + 1) % words.length; }
+            }
+            setTimeout(type, isDeleting ? 35 : 75);
+        }
+        document.addEventListener("DOMContentLoaded", type);
+    </script>
+</body>
+</html>
